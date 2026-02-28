@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suman Gugulothu | FP&A Analyst</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafaf8;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gray: #6b6b6b;
+      --gray-light: #e8e8e4;
+      --card-bg: #f4f3ef;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(250,250,248,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--black);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gray);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--black); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 60px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { max-width: 700px; }
+    .hero-eyebrow {
+      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+    }
+    .hero-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.05;
+      color: var(--black);
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.2s forwards;
+    }
+    .hero-name em {
+      font-style: italic; color: var(--gold);
+    }
+    .hero-desc {
+      font-size: 1.05rem; font-weight: 300; line-height: 1.75;
+      color: var(--gray); max-width: 540px;
+      margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.3s forwards;
+    }
+    .hero-cta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.6s ease 0.4s forwards;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 0.05em; text-decoration: none;
+      border-radius: 2px; transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--black); color: var(--white);
+    }
+    .btn-primary:hover { background: var(--gold); color: var(--black); }
+    .btn-outline {
+      border: 1.5px solid var(--black); color: var(--black);
+    }
+    .btn-outline:hover { background: var(--black); color: var(--white); }
+
+    /* STATS BAR */
+    .stats-bar {
+      background: var(--black);
+      padding: 32px 60px;
+      display: flex; gap: 0; flex-wrap: wrap;
+    }
+    .stat {
+      flex: 1; min-width: 160px;
+      padding: 0 40px 0 0;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      opacity: 0; animation: fadeUp 0.5s ease forwards;
+    }
+    .stat:last-child { border-right: none; }
+    .stat:nth-child(1) { animation-delay: 0.1s; }
+    .stat:nth-child(2) { animation-delay: 0.2s; }
+    .stat:nth-child(3) { animation-delay: 0.3s; }
+    .stat:nth-child(4) { animation-delay: 0.4s; }
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem; color: var(--gold);
+    }
+    .stat-label {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.45);
+      margin-top: 4px;
+    }
+
+    /* SECTION */
+    section { padding: 100px 60px; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15; margin-bottom: 60px;
+    }
+
+    /* EXPERIENCE */
+    .experience-list { display: flex; flex-direction: column; gap: 2px; }
+    .exp-item {
+      display: grid; grid-template-columns: 200px 1fr;
+      gap: 40px; padding: 36px 0;
+      border-top: 1px solid var(--gray-light);
+      transition: background 0.2s;
+    }
+    .exp-item:last-child { border-bottom: 1px solid var(--gray-light); }
+    .exp-meta { padding-top: 4px; }
+    .exp-dates {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
+    }
+    .exp-company {
+      font-size: 0.85rem; color: var(--gray); font-weight: 400;
+    }
+    .exp-content {}
+    .exp-role {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.4rem; margin-bottom: 12px;
+    }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .exp-bullets li {
+      font-size: 0.9rem; font-weight: 300; line-height: 1.65;
+      color: var(--gray); padding-left: 16px; position: relative;
+    }
+    .exp-bullets li::before {
+      content: '—'; position: absolute; left: 0;
+      color: var(--gold); font-size: 0.7rem; top: 5px;
+    }
+
+    /* SKILLS */
+    .skills-section { background: var(--card-bg); }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2px;
+    }
+    .skill-card {
+      background: var(--white);
+      padding: 36px 32px;
+      transition: transform 0.2s;
+    }
+    .skill-card:hover { transform: translateY(-4px); }
+    .skill-icon {
+      font-size: 1.6rem; margin-bottom: 16px;
+    }
+    .skill-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem; margin-bottom: 12px;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      padding: 4px 10px; background: var(--card-bg);
+      color: var(--gray); border-radius: 2px;
+    }
+
+    /* EDUCATION */
+    .edu-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2px;
+    }
+    .edu-card {
+      background: var(--card-bg); padding: 40px 36px;
+    }
+    .edu-degree {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem; margin-bottom: 8px;
+    }
+    .edu-school { font-size: 0.9rem; color: var(--gray); margin-bottom: 6px; }
+    .edu-detail {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gold);
+    }
+
+    /* CONTACT */
+    .contact-section {
+      background: var(--black); color: var(--white);
+      text-align: center;
+    }
+    .contact-section .section-title { color: var(--white); }
+    .contact-links {
+      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .contact-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.6);
+      text-decoration: none; padding: 14px 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 2px; transition: all 0.2s;
+    }
+    .contact-link:hover {
+      color: var(--gold); border-color: var(--gold);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--black); color: rgba(255,255,255,0.3);
+      text-align: center; padding: 20px;
+      font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .stats-bar { padding: 24px; gap: 24px; }
+      .stat { border-right: none; padding: 0; }
+      section { padding: 60px 24px; }
+      .exp-item { grid-template-columns: 1fr; gap: 8px; }
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2px;
+    }
+    .project-card {
+      background: var(--card-bg); padding: 40px 36px;
+      text-decoration: none; color: var(--black);
+      display: flex; flex-direction: column; gap: 16px;
+      transition: transform 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    .project-card:hover { transform: translateY(-4px); background: var(--black); color: var(--white); }
+    .project-card:hover .project-card-tag { color: var(--gold); border-color: rgba(201,168,76,0.4); }
+    .project-card:hover .project-card-desc { color: rgba(255,255,255,0.6); }
+    .project-card:hover .project-stat { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+    .project-card:hover .project-card-arrow { color: var(--gold); }
+    .project-card-coming { cursor: default; opacity: 0.6; }
+    .project-card-coming:hover { transform: none; background: var(--card-bg); color: var(--black); }
+    .project-card-tag {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gold);
+    }
+    .project-card-title {
+      font-family: "DM Serif Display", serif;
+      font-size: 1.2rem; line-height: 1.3;
+    }
+    .project-card-desc {
+      font-size: 0.85rem; font-weight: 300; color: var(--gray);
+      line-height: 1.7; flex: 1;
+    }
+    .project-card-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+    .project-stat {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      padding: 4px 10px; background: var(--white);
+      color: var(--black); border-radius: 2px;
+    }
+    .project-card-arrow {
+      font-size: 0.82rem; font-weight: 600; color: var(--gold);
+      margin-top: 8px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">S. Gugulothu</a>
+    <ul class="nav-links">
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Financial Planning & Analysis</p>
+      <h1 class="hero-name">Suman<br/><em>Gugulothu</em></h1>
+      <p class="hero-desc">
+        5 years of experience in FP&A specializing in financial modeling, budgeting, forecasting, and long-range planning cycles. Strategic partner to Engineering, Operations, and senior leadership driving P&L improvements across global organizations.
+      </p>
+      <div class="hero-cta">
+        <a href="sumanresume.pdf" class="btn btn-primary" download>↓ Download Resume</a>
+        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-number">$2.8B</div>
+      <div class="stat-label">Budget Managed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">20%</div>
+      <div class="stat-label">Close Time Reduced</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">10%</div>
+      <div class="stat-label">OpEx Cost Reduction</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <p class="section-label">Career</p>
+    <h2 class="section-title">Work Experience</h2>
+    <div class="experience-list">
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-dates">Jul 2025 – Present</div>
+          <div class="exp-company">Lucid Motors · United States</div>
+        </div>
+        <div class="exp-content">
+          <h3 class="exp-role">Financial Planning Analyst</h3>
+          <ul class="exp-bullets">
+            <li>Prepare and manage $2.8B annual budget and rolling forecasts performing variance analysis to identify P&L gaps, risks, and opportunities.</li>
+            <li>Develop and maintain driver-based financial models partnering with Operations and Engineering to align financial performance to growth targets.</li>
+            <li>Perform monthly and YTD variance analysis, presenting insights to leadership while managing cost center accruals and resolving a $2M revenue recognition variance.</li>
+            <li>Own OpEx and CapEx planning across headcount and spending trends implementing targeted actions that reduced operating costs by 10%.</li>
+            <li>Design streamlined dashboards in SAP Analytics Cloud, Power BI, and Anaplan reducing month-end close time by 20%.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-dates">Apr 2024 – May 2025</div>
+          <div class="exp-company">IKEA North America · PA, United States</div>
+        </div>
+        <div class="exp-content">
+          <h3 class="exp-role">Corporate Financial Analyst</h3>
+          <ul class="exp-bullets">
+            <li>Led month-end close and financial consolidation across business units, managing SAP master data to ensure corporate P&L accuracy.</li>
+            <li>Partnered with senior management on annual budgets and rolling forecasts; built financial models improving forecast-to-actual alignment.</li>
+            <li>Performed monthly variance analysis driving $7,000+ in annual cost reductions across business units.</li>
+            <li>Served as finance business partner to Sales, Marketing, and Operations; owned P&L reporting and decision-support analysis.</li>
+            <li>Designed and deployed Power BI dashboards reducing financial reporting cycle time and improving real-time P&L visibility.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-dates">Mar 2023 – Jul 2023</div>
+          <div class="exp-company">Real Madrid C.F. · Madrid, Spain</div>
+        </div>
+        <div class="exp-content">
+          <h3 class="exp-role">Business Financial Analyst</h3>
+          <ul class="exp-bullets">
+            <li>Analyzed commercial P&L across ticketing, sponsorship, and fan engagement; translated EUR 800M+ in financial data into executive-ready insights.</li>
+            <li>Built automated dashboards in Excel, SQL, Python, and Power BI delivering real-time financial visibility for the business finance team.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-item">
+        <div class="exp-meta">
+          <div class="exp-dates">Nov 2019 – Feb 2022</div>
+          <div class="exp-company">Johnson & Johnson</div>
+        </div>
+        <div class="exp-content">
+          <h3 class="exp-role">Financial Analyst</h3>
+          <ul class="exp-bullets">
+            <li>Supported long-term strategic plans, annual budgets, and rolling forecasts; built financial models ensuring GAAP compliance for senior management.</li>
+            <li>Led forecasting and budgeting improvements achieving 12% gain in budget accuracy; conducted scenario analysis and sensitivity modeling.</li>
+            <li>Performed cash flow modeling and working capital management supporting business decisions and maximizing ROI.</li>
+            <li>Developed KPI reporting framework using Excel, PowerPoint, and Tableau, enhancing P&L visibility across leadership teams.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="section-label">Work</p>
+    <h2 class="section-title">Featured Projects</h2>
+    <div class="projects-grid">
+
+      <a href="project-lucid.html" class="project-card">
+        <div class="project-card-tag">FP&A · Variance Analysis · Cost Recovery</div>
+        <h3 class="project-card-title">Uncovering a $2M Operating Cost Variance Through Headcount Analysis</h3>
+        <p class="project-card-desc">A month-end investigation at Lucid Motors that identified a systemic badge-sharing pattern across manufacturing — two contradicting signals led to $2M in monthly operating cost recovery and an Okta system fix.</p>
+        <div class="project-card-stats">
+          <span class="project-stat">$2M Recovered</span>
+          <span class="project-stat">Live Dashboards Built</span>
+          <span class="project-stat">Okta Fix Implemented</span>
+        </div>
+        <div class="project-card-arrow">View Project →</div>
+      </a>
+
+      <div class="project-card project-card-coming">
+        <div class="project-card-tag">FP&A · Forecasting</div>
+        <h3 class="project-card-title">Budget vs Actual Financial Model</h3>
+        <p class="project-card-desc">Driver-based financial model with scenario analysis, sensitivity modeling, and automated variance reporting. Coming soon.</p>
+        <div class="project-card-arrow">Coming Soon</div>
+      </div>
+
+      <div class="project-card project-card-coming">
+        <div class="project-card-tag">FP&A · Dashboards</div>
+        <h3 class="project-card-title">KPI & P&L Dashboard</h3>
+        <p class="project-card-desc">Interactive Power BI dashboard consolidating revenue, OpEx, headcount, and EBITDA metrics for executive reporting. Coming soon.</p>
+        <div class="project-card-arrow">Coming Soon</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="skills-section">
+    <p class="section-label">Capabilities</p>
+    <h2 class="section-title">Skills & Tools</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">📊</div>
+        <div class="skill-name">Financial Systems</div>
+        <div class="skill-tags">
+          <span class="tag">SAP S/4HANA</span>
+          <span class="tag">SAP Analytics Cloud</span>
+          <span class="tag">Anaplan</span>
+          <span class="tag">Coupa</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">Tableau</span>
+          <span class="tag">SQL</span>
+          <span class="tag">Python</span>
+          <span class="tag">Excel</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">💼</div>
+        <div class="skill-name">Finance & Accounting</div>
+        <div class="skill-tags">
+          <span class="tag">FP&A</span>
+          <span class="tag">Financial Modeling</span>
+          <span class="tag">Variance Analysis</span>
+          <span class="tag">Budgeting & Forecasting</span>
+          <span class="tag">P&L Management</span>
+          <span class="tag">Cash Flow Modeling</span>
+          <span class="tag">GAAP Compliance</span>
+          <span class="tag">Cost Optimization</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🧠</div>
+        <div class="skill-name">Methodologies</div>
+        <div class="skill-tags">
+          <span class="tag">Driver-Based Modeling</span>
+          <span class="tag">Scenario Analysis</span>
+          <span class="tag">Data Visualization</span>
+          <span class="tag">Risk Management</span>
+          <span class="tag">Project Management</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <p class="section-label">Academic</p>
+    <h2 class="section-title">Education</h2>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <div class="edu-degree">M.S., Business Intelligence & Analytics</div>
+        <div class="edu-school">Stevens Institute of Technology · United States</div>
+        <div class="edu-detail">Sep 2022 – May 2024 · GPA 3.5/4.0</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-degree">M.S., Sports Technologies & Digital Analytics</div>
+        <div class="edu-school">Escuela Universitaria Real Madrid – Universidad Europea · Madrid, Spain</div>
+        <div class="edu-detail">Jun 2022 – Jun 2023 · GPA 4.0/4.0</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-degree">B.S., Accounting and Finance</div>
+        <div class="edu-school">Osmania University</div>
+        <div class="edu-detail">Jun 2014 – Dec 2017 · GPA 8.7/10</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section">
+    <p class="section-label" style="color:var(--gold)">Let's Connect</p>
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="contact-links">
+      <a href="/cdn-cgi/l/email-protection#1b7c6e7c6e7c686e767a755b7c767a727735787476" class="contact-link">✉ <span class="__cf_email__" data-cfemail="553220322032262038343b153238343c397b363a38">[email&#160;protected]</span></a>
+      <a href="https://www.linkedin.com/in/sumangugulothu/" target="_blank" class="contact-link">in LinkedIn</a>
+      <a href="sumanresume.pdf" class="contact-link" 

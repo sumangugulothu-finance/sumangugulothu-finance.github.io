@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Headcount Variance Investigation | Suman Gugulothu</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --black: #0a0a0a;
+      --white: #fafaf8;
+      --gold: #c9a84c;
+      --gray: #6b6b6b;
+      --gray-light: #e8e8e4;
+      --card-bg: #f4f3ef;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--black); }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(250,250,248,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-light);
+    }
+    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--black); text-decoration: none; }
+    .nav-back { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color 0.2s; }
+    .nav-back:hover { color: var(--gold); }
+
+    .project-hero {
+      padding: 140px 60px 80px;
+      background: var(--black); color: var(--white);
+      position: relative; overflow: hidden;
+    }
+    .project-hero::before {
+      content: '';
+      position: absolute; top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 70%);
+    }
+    .project-tag {
+      display: inline-block;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.4);
+      padding: 5px 12px; border-radius: 2px; margin-bottom: 24px;
+    }
+    .project-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.1; margin-bottom: 20px; max-width: 750px;
+    }
+    .project-subtitle {
+      font-size: 1rem; font-weight: 300; color: rgba(255,255,255,0.6);
+      max-width: 580px; line-height: 1.7; margin-bottom: 48px;
+    }
+    .project-meta { display: flex; gap: 40px; flex-wrap: wrap; }
+    .meta-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .meta-value { font-size: 0.9rem; font-weight: 500; color: var(--white); }
+
+    .impact-bar { display: flex; background: var(--gold); }
+    .impact-stat {
+      flex: 1; padding: 28px 40px;
+      border-right: 1px solid rgba(0,0,0,0.15); text-align: center;
+    }
+    .impact-stat:last-child { border-right: none; }
+    .impact-number { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--black); }
+    .impact-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55); margin-top: 4px; }
+
+    .project-body { max-width: 820px; margin: 0 auto; padding: 80px 60px; }
+    .section-block { margin-bottom: 60px; }
+    .block-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+    .block-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; margin-bottom: 16px; }
+    .block-text { font-size: 0.92rem; font-weight: 300; line-height: 1.8; color: var(--gray); }
+    .block-text + .block-text { margin-top: 14px; }
+
+    /* TIMELINE */
+    .timeline { display: flex; flex-direction: column; gap: 2px; margin-top: 24px; }
+    .timeline-item {
+      display: grid; grid-template-columns: 48px 1fr;
+      gap: 20px; padding: 28px; background: var(--card-bg);
+      border-left: 3px solid transparent; transition: border-color 0.2s;
+    }
+    .timeline-item:hover { border-left-color: var(--gold); }
+    .step-num { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--gold); line-height: 1; }
+    .step-title { font-weight: 600; font-size: 0.92rem; margin-bottom: 8px; }
+    .step-desc { font-size: 0.85rem; font-weight: 300; color: var(--gray); line-height: 1.7; }
+
+    /* FINDING CALLOUT */
+    .callout {
+      background: var(--black); color: var(--white);
+      padding: 40px; margin: 32px 0;
+      border-left: 4px solid var(--gold);
+    }
+    .callout-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .callout-text { font-family: 'DM Serif Display', serif; font-size: 1.3rem; line-height: 1.5; }
+
+    .tools-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .tool-tag { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; padding: 8px 16px; background: var(--card-bg); color: var(--black); border-radius: 2px; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2px; margin-top: 24px; }
+    .result-card { background: var(--black); color: var(--white); padding: 32px 28px; }
+    .result-number { font-family: 'DM Serif Display', serif; font-size: 2.2rem; color: var(--gold); margin-bottom: 8px; }
+    .result-desc { font-size: 0.82rem; font-weight: 300; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+    /* STAKEHOLDERS */
+    .stakeholders { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .stakeholder {
+      font-size: 0.82rem; font-weight: 500;
+      padding: 10px 18px; border: 1.5px solid var(--gray-light);
+      border-radius: 2px; color: var(--black);
+    }
+
+    .project-cta { background: var(--card-bg); padding: 60px; text-align: center; margin-top: 60px; }
+    .cta-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 12px; }
+    .cta-desc { font-size: 0.9rem; color: var(--gray); margin-bottom: 28px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.05em; text-decoration: none; border-radius: 2px; transition: all 0.2s; margin: 0 8px; }
+    .btn-primary { background: var(--black); color: var(--white); }
+    .btn-primary:hover { background: var(--gold); color: var(--black); }
+    .btn-outline { border: 1.5px solid var(--black); color: var(--black); }
+    .btn-outline:hover { background: var(--black); color: var(--white); }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .project-hero { padding: 100px 24px 60px; }
+      .project-body { padding: 60px 24px; }
+      .impact-stat { padding: 20px; }
+      .project-cta { padding: 40px 24px; }
+    }
+
+    /* DASHBOARD */
+    .dashboard-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px; margin-top: 0;
+    }
+    .dash-card {
+      background: #0f1117;
+      padding: 28px; border-radius: 0;
+    }
+    .dash-card-wide {
+      grid-column: 1 / -1;
+    }
+    .dash-card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+    }
+    .dash-title {
+      font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 4px;
+    }
+    .dash-sub {
+      font-size: 0.72rem; color: rgba(255,255,255,0.35); letter-spacing: 0.05em;
+    }
+    .dash-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      padding: 4px 10px; border-radius: 2px;
+    }
+    .badge-alert { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .badge-resolved { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .kpi-strip {
+      grid-column: 1 / -1;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .kpi-card {
+      background: #0f1117; padding: 24px 28px;
+      text-align: center;
+    }
+    .kpi-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 8px;
+    }
+    .kpi-value {
+      font-family: "DM Serif Display", serif;
+      font-size: 2rem; margin-bottom: 4px;
+    }
+    .kpi-red { color: #ef4444; }
+    .kpi-green { color: #c9a84c; }
+    .kpi-sub {
+      font-size: 0.72rem; color: rgba(255,255,255,0.3);
+    }
+    @media (max-width: 768px) {
+      .dashboard-wrap { grid-template-columns: 1fr; }
+      .dash-card-wide { grid-column: 1; }
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">S. Gugulothu</a>
+    <a href="index.html" class="nav-back">← Back to Portfolio</a>
+  </nav>
+
+  <div class="project-hero">
+    <span class="project-tag">FP&A · Variance Analysis · Operating Cost Recovery</span>
+    <h1 class="project-title">Uncovering a $2M Operating Cost Variance Through Headcount Analysis</h1>
+    <p class="project-subtitle">
+      A month-end variance investigation at Lucid Motors that started as two contradicting signals — headcount rising while overtime was also rising — and uncovered a systemic badge-sharing pattern across manufacturing operations, recovering $2M in monthly operating costs.
+    </p>
+    <div class="project-meta">
+      <div class="meta-item">
+        <div class="meta-label">Company</div>
+        <div class="meta-value">Lucid Motors</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Role</div>
+        <div class="meta-value">Financial Planning Analyst</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Year</div>
+        <div class="meta-value">2025</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Type</div>
+        <div class="meta-value">Variance Investigation · Cost Recovery</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="impact-bar">
+    <div class="impact-stat">
+      <div class="impact-number">$2M</div>
+      <div class="impact-label">Monthly Operating Cost Recovery</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-number">Multi</div>
+      <div class="impact-label">Cost Centers Analyzed</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-number">Okta</div>
+      <div class="impact-label">System Fix Implemented</div>
+    </div>
+    <div class="impact-stat">
+      <div class="impact-number">2</div>
+      <div class="impact-label">Live Dashboards Built</div>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <div class="section-block">
+      <div class="block-label">Background</div>
+      <h2 class="block-title">It Started With a Number That Didn't Add Up</h2>
+      <p class="block-text">
+        As part of my monthly headcount forecasting at Lucid Motors, I build burden rate models across multiple employee grades — from Grade 0 contractors to full-time salaried employees. Each grade carries a different cost burden, so accuracy in headcount is critical to getting payroll forecasts right.
+      </p>
+      <p class="block-text" style="margin-top:14px">
+        During a routine month-end close, I noticed two signals that directly contradicted each other. First, headcount was higher than forecast. Normally that means overtime should decrease — more people sharing the workload means fewer extra hours per person. But instead, overtime costs were also rising. Both headcount AND overtime were going up at the same time. That should never happen. That contradiction triggered a deeper investigation.
+      </p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">The Anomaly</div>
+      <div class="callout-text">"Headcount was rising. Overtime should have dropped. Instead it was also rising. Both going up at the same time — that's impossible unless something is wrong."</div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-label">Investigation</div>
+      <h2 class="block-title">Digging Into the Data</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="step-num">01</div>
+          <div>
+            <div class="step-title">Variance Presentation</div>
+            <div class="step-desc">Brought the headcount vs. dollar discrepancy to the forecast review meeting, presenting the variance across cost centers to senior leadership and business partners.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">02</div>
+          <div>
+            <div class="step-title">Second Red Flag — Overtime Rising Too</div>
+            <div class="step-desc">When headcount increases, overtime per person should naturally decrease — more workers sharing the same workload means fewer extra hours needed. But the data showed overtime costs were also climbing alongside headcount. Two numbers moving in the same direction when they should move opposite confirmed something structural was wrong.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">03</div>
+          <div>
+            <div class="step-title">HR Data Deep Dive</div>
+            <div class="step-desc">Requested granular employee data from HR across all grade levels. Built a headcount model breaking down active employees by grade, cost center, shift, and badge activity.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">04</div>
+          <div>
+            <div class="step-title">Pattern Recognition</div>
+            <div class="step-desc">While modeling badge entry and exit data, identified a recurring pattern: two badge taps registering at shift start, but only one badge tap at shift end. Across multiple cost centers, this pattern appeared consistently.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">05</div>
+          <div>
+            <div class="step-title">Root Cause Identified</div>
+            <div class="step-desc">Cross-referencing badge data with payroll confirmed it: operators were tapping a colleague's badge at the turnstile gate to register them as present — while that employee wasn't actually working. Payroll was processing pay for employees who weren't on the floor, inflating headcount costs.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">06</div>
+          <div>
+            <div class="step-title">Built Live Dashboard to Present Findings</div>
+            <div class="step-desc">To make the data undeniable and easy to act on, I built two dashboards — a live headcount tracking dashboard showing real-time headcount versus forecast by cost center and grade, and a spend tracking dashboard monitoring overtime and labor costs against budget. These dashboards became the single source of truth presented to leadership and business partners, making the variance pattern visually clear and impossible to dispute.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">07</div>
+          <div>
+            <div class="step-title">Business Partner Collaboration</div>
+            <div class="step-desc">Partnered with Operations, HR, and IT leadership across each cost center to validate findings, walk through the data, and build a remediation plan that was fair, accurate, and operationally viable.</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="step-num">08</div>
+          <div>
+            <div class="step-title">System Fix — Okta Verification</div>
+            <div class="step-desc">Worked with IT to implement Okta-based identity verification at badge entry points, ensuring each badge tap required active authentication tied to the actual employee. Badge sharing was eliminated at the system level.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-label">Stakeholders</div>
+      <h2 class="block-title">Who I Worked With</h2>
+      <div class="stakeholders">
+        <span class="stakeholder">FP&A Leadership</span>
+        <span class="stakeholder">HR Business Partners</span>
+        <span class="stakeholder">Operations Managers</span>
+        <span class="stakeholder">Cost Center Owners</span>
+        <span class="stakeholder">IT / Identity & Access</span>
+        <span class="stakeholder">Senior Leadership</span>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-label">Tools Used</div>
+      <h2 class="block-title">Tech Stack</h2>
+      <div class="tools-grid">
+        <span class="tool-tag">SAP S/4HANA</span>
+        <span class="tool-tag">Excel</span>
+        <span class="tool-tag">Power BI</span>
+        <span class="tool-tag">Anaplan</span>
+        <span class="tool-tag">Okta</span>
+        <span class="tool-tag">HR Systems</span>
+        <span class="tool-tag">PowerPoint</span>
+        <span class="tool-tag">Live Headcount Dashboard</span>
+        <span class="tool-tag">Spend Tracking Dashboard</span>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-label">Results</div>
+      <h2 class="block-title">Impact & Outcomes</h2>
+      <div class="results-grid">
+        <div class="result-card">
+          <div class="result-number">$2M</div>
+          <div class="result-desc">Monthly operating cost recovered through identification and resolution of badge-sharing pattern across manufacturing floor</div>
+        </div>
+        <div class="result-card">
+          <div class="result-number">100%</div>
+          <div class="result-desc">Badge sharing eliminated after Okta verification implemented across manufacturing floor</div>
+        </div>
+        <div class="result-card">
+          <div class="result-number">↑</div>
+          <div class="result-desc">Headcount forecast accuracy improved with clean badge and payroll data alignment</div>
+        </div>
+        <div class="result-card">
+          <div class="result-number">2</div>
+          <div class="result-desc">Live dashboards built — real-time headcount tracking and spend monitoring used by leadership</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <div class="block-label">Key Takeaway</div>
+      <h2 class="block-title">What This Project Taught Me</h2>
+      <p class="block-text">
+        The most valuable financial insights don't always come from spreadsheets — they come from asking why a number doesn't make sense and being willing to follow the data wherever it leads. This project required me to connect financial modeling, operational knowledge, HR data, and cross-functional relationships to solve a problem that wasn't obvious from the surface.
+      </p>
+      <p class="block-text" style="margin-top:14px">
+        It reinforced that strong FP&A isn't just about building accurate forecasts — it's about being curious enough to investigate when reality doesn't match the model.
+      </p>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div class="section-block">
+      <div class="block-label">Dashboard Preview</div>
+      <h2 class="block-title">Live Headcount & Spend Tracking</h2>
+      <p class="block-text">Sample visualization of the dashboards built to surface the variance pattern — headcount by grade vs forecast, and overtime spend trending upward despite higher headcount.</p>
+    </div>
+
+    <div class="dashboard-wrap">
+
+      <!-- CHART 1: Headcount Forecast vs Actual -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-title">Headcount — Forecast vs Actual by Grade</div>
+            <div class="dash-sub">Monthly · All Cost Centers · Grades 0–4</div>
+          </div>
+          <div class="dash-badge badge-alert">⚠ Variance Detected</div>
+        </div>
+        <canvas id="headcountChart" height="220"></canvas>
+      </div>
+
+      <!-- CHART 2: Overtime vs Headcount trend -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-title">Overtime Cost vs Headcount Trend</div>
+            <div class="dash-sub">Should move opposite — both rising = anomaly</div>
+          </div>
+          <div class="dash-badge badge-alert">⚠ Anomaly</div>
+        </div>
+        <canvas id="overtimeChart" height="220"></canvas>
+      </div>
+
+      <!-- CHART 3: Badge taps -->
+      <div class="dash-card dash-card-wide">
+        <div class="dash-card-header">
+          <div>
+            <div class="dash-title">Badge Entry vs Exit Discrepancy by Cost Center</div>
+            <div class="dash-sub">Entry taps vs exit taps — gap indicates badge sharing</div>
+          </div>
+          <div class="dash-badge badge-resolved">✓ Resolved via Okta</div>
+        </div>
+        <canvas id="badgeChart" height="180"></canvas>
+      </div>
+
+      <!-- KPI STRIP -->
+      <div class="kpi-strip">
+        <div class="kpi-card">
+          <div class="kpi-label">Headcount Variance</div>
+          <div class="kpi-value kpi-red">+269</div>
+          <div class="kpi-sub">vs Forecast</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Overtime Cost</div>
+          <div class="kpi-value kpi-red">+$1.4M</div>
+          <div class="kpi-sub">vs Prior Month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Badge Discrepancy</div>
+          <div class="kpi-value kpi-red">+794</div>
+          <div class="kpi-sub">Entry vs Exit Gap</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Cost Recovered</div>
+          <div class="kpi-value kpi-green">$2M</div>
+          <div class="kpi-sub">Monthly Savings</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="project-cta">
+      <h3 class="cta-title">Want to discuss this project?</h3>
+      <p class="cta-desc">I'm happy to walk through the analysis, methodology, and findings in detail.</p>
+      <a href="index.html" class="btn btn-primary">← Back to Portfolio</a>
+      <a href="mailto:gugugsuman@gmail.com" class="btn btn-outline">Get In Touch</a>
+    </div>
+
+  </div>
+
+
+  <script>
+    const chartDefaults = {
+      color: 'rgba(255,255,255,0.6)',
+      font: { family: 'DM Sans' }
+    };
+    Chart.defaults.color = 'rgba(255,255,255,0.45)';
+    Chart.defaults.font.family = 'DM Sans';
+
+    // Chart 1 - Headcount Forecast vs Actual by Grade
+    new Chart(document.getElementById('headcountChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [
+          {
+            label: 'Forecast Headcount',
+            data: [4820, 4890, 4950, 5020, 5080, 5120],
+            backgroundColor: 'rgba(201,168,76,0.7)',
+            borderColor: '#c9a84c',
+            borderWidth: 1,
+          },
+          {
+            label: 'Actual Headcount',
+            data: [4835, 4912, 4998, 5094, 5231, 5389],
+            backgroundColor: 'rgba(239,68,68,0.6)',
+            borderColor: '#ef4444',
+            borderWidth: 1,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { color: 'rgba(255,255,255,0.6)', boxWidth: 12 } },
+          tooltip: { backgroundColor: '#1a1a2e' }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.45)' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.45)' } }
+        }
+      }
+    });
+
+    // Chart 2 - Overtime vs Headcount dual axis
+    new Chart(document.getElementById('overtimeChart'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [
+          {
+            label: 'Overtime Cost ($K)',
+            data: [820, 940, 1080, 1340, 1720, 2180],
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239,68,68,0.1)',
+            fill: true,
+            tension: 0.4,
+            yAxisID: 'y',
+          },
+          {
+            label: 'Headcount',
+            data: [4835, 4912, 4998, 5094, 5231, 5389],
+            borderColor: '#c9a84c',
+            backgroundColor: 'rgba(201,168,76,0.08)',
+            fill: false,
+            tension: 0.4,
+            yAxisID: 'y1',
+            borderDash: [5,3],
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top', labels: { color: 'rgba(255,255,255,0.6)', boxWidth: 12 } },
+          tooltip: { backgroundColor: '#1a1a2e' }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.45)' } },
+          y: {
+            type: 'linear', position: 'left',
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#ef4444', callback: v => "$" + v + "K" }
+          },
+          y1: {
+            type: 'linear', position: 'right',
+            grid: { drawOnChartArea: false },
+            ticks: { color: '#c9a84c' }
+          }
+        }
+      }
+    });
+
+    // Chart 3 - Badge entry vs exit discrepancy
+    new Chart(document.getElementById('badgeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Cost Center A', 'Cost Center B', 'Cost Center C', 'Cost Center D', 'Cost Center E', 'Cost Center F'],
+        datasets: [
+          {
+            label: 'Badge Entry Taps',
+            data: [892, 756, 1043, 634, 812, 578],
+            backgroundColor: 'rgba(201,168,76,0.75)',
+            borderColor: '#c9a84c',
+            borderWidth: 1,
+          },
+          {
+            label: 'Badge Exit Taps',
+            data: [734, 601, 847, 508, 643, 461],
+            backgroundColor: 'rgba(239,68,68,0.6)',
+            borderColor: '#ef4444',
+            borderWidth: 1,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { color: 'rgba(255,255,255,0.6)', boxWidth: 12 } },
+          tooltip: { backgroundColor: '#1a1a2e' }
+        },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.45)' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.45)' } }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
